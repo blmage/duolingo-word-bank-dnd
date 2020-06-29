@@ -8,19 +8,21 @@ const WORD_SELECTORS = [ '._2T0K5', '._10L3U' ];
 const WORD_BUTTON_SELECTOR = WORD_SELECTORS.map(`${it} button`).join(',');
 const DRAGGABLE_WORD_SELECTOR = WORD_SELECTORS.map(`${ANSWER_SELECTOR} ${it}`).join(',');
 
-let wordBankAnswer = null;
+let lastHowlPrototype = null;
+let lastWordBankAnswer = null;
+let isReinsertingWords = false;
 
 setInterval(() => {
   const newWordBankAnswer = document.querySelector(ANSWER_SELECTOR);
 
-  if (newWordBankAnswer !== wordBankAnswer) {
-    wordBankAnswer = newWordBankAnswer;
+  if (newWordBankAnswer !== lastWordBankAnswer) {
+    lastWordBankAnswer = newWordBankAnswer;
 
-    if (!wordBankAnswer) {
+    if (!lastWordBankAnswer) {
       return;
     }
 
-    const sortable = new Sortable(wordBankAnswer, {
+    const sortable = new Sortable(lastWordBankAnswer, {
       draggable: DRAGGABLE_WORD_SELECTOR,
       distance: 5,
     });
@@ -34,7 +36,7 @@ setInterval(() => {
         return;
       }
 
-      const answerWordButtons = Array.from(wordBankAnswer.querySelectorAll(WORD_BUTTON_SELECTOR));
+      const answerWordButtons = Array.from(lastWordBankAnswer.querySelectorAll(WORD_BUTTON_SELECTOR));
 
       const sortedWords = answerWordButtons.map(button => {
         // Trigger the word removal.
@@ -46,8 +48,8 @@ setInterval(() => {
       }).filter(it.length > 0);
 
       // Sometimes, the "draggable" plugin does not clean everything up.
-      while (wordBankAnswer.firstChild) {
-        wordBankAnswer.removeChild(wordBankAnswer.firstChild);
+      while (lastWordBankAnswer.firstChild) {
+        lastWordBankAnswer.removeChild(lastWordBankAnswer.firstChild);
       }
 
       // The "draggable" plugin will attempt to move an element we have removed - make sure that it won't fail.
@@ -56,12 +58,33 @@ setInterval(() => {
 
       const sourceButtons = Array.from(wordBankSource.querySelectorAll(WORD_BUTTON_SELECTOR));
 
-      // Add the words back, in the right order.
-      sourceButtons
-        .map(button => [ sortedWords.indexOf(button.innerText.trim()), button ])
-        .filter(it[0] >= 0)
-        .sort(lift(_[0] - _[0]))
-        .forEach(it[1].click());
+      // TTS sounds will be played when words are reinserted - prevent this.
+      isReinsertingWords = true;
+
+      try {
+        // Add the words back, in the right order.
+        sourceButtons
+          .map(button => [ sortedWords.indexOf(button.innerText.trim()), button ])
+          .filter(it[0] >= 0)
+          .sort(lift(_[0] - _[0]))
+          .forEach(it[1].click());
+      } catch (error) {
+        isReinsertingWords = false;
+        throw error;
+      }
+
+      isReinsertingWords = false;
     });
+  }
+
+  if (window.Howl && (lastHowlPrototype !== window.Howl.prototype)) {
+    lastHowlPrototype = window.Howl.prototype;
+    const originalHowlPlay = window.Howl.prototype.play;
+
+    window.Howl.prototype.play = function (id) {
+      if (!isReinsertingWords) {
+        return originalHowlPlay.call(this, id);
+      }
+    };
   }
 }, 50);
