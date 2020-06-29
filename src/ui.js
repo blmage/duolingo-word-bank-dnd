@@ -4,7 +4,7 @@ import { Draggable, Sortable } from '@shopify/draggable';
 const ANSWER_SELECTOR = '._3ysW7';
 const SOURCE_SELECTOR = '[data-test="word-bank"]';
 
-const WORD_SELECTORS = [ '._2T0K5', '._10L3U' ];
+const WORD_SELECTORS = [ '._2T0K5', '._10L3U', '.zVWkL' ];
 const WORD_BUTTON_SELECTOR = WORD_SELECTORS.map(`${it} button`).join(',');
 const DRAGGABLE_WORD_SELECTOR = WORD_SELECTORS.map(`${ANSWER_SELECTOR} ${it}`).join(',');
 
