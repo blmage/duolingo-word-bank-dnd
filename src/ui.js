@@ -61,8 +61,7 @@ setInterval(() => {
         .map(button => [ sortedWords.indexOf(button.innerText.trim()), button ])
         .filter(it[0] >= 0)
         .sort(lift(_[0] - _[0]))
-        .map(it[1])
-        .forEach(it.click());
+        .forEach(it[1].click());
     });
   }
 }, 50);
