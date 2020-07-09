@@ -1,7 +1,7 @@
 {
   "name": "Duolingo Word Bank Dnd",
   "version": "1.1.1",
-  "description": "Enables the drag'n'drop of words in the word bank answers of Duolingo.",
+  "description": "Enables the drag'n'drop of words in the word-bank answers of Duolingo.",
   "permissions": [
     "activeTab",
     "https://*.duolingo.com/"
