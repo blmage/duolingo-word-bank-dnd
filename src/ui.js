@@ -1,17 +1,28 @@
 import { _, it, lift } from 'param.macro';
 import { Draggable, Sortable } from '@shopify/draggable';
 
-const ANSWER_SELECTOR = '._3ysW7';
-const SOURCE_SELECTOR = '[data-test="word-bank"]';
-
-const WORD_SELECTORS = [ '._2T0K5', '._10L3U', '.zVWkL' ];
-const WORD_BUTTON_SELECTOR = WORD_SELECTORS.map(`${it} button`).join(',');
-const DRAGGABLE_WORD_SELECTOR = WORD_SELECTORS.map(`${ANSWER_SELECTOR} ${it}`).join(',');
-
+/**
+ * The last seen prototype for the "Howl" type from the "howler.js" library.
+ *
+ * @type {object|null}
+ */
 let lastHowlPrototype = null;
+
+/**
+ * The last seen word-bank answer.
+ *
+ * @type {Element|null}
+ */
 let lastWordBankAnswer = null;
+
+/**
+ * Whether we are currently reinserting words in the current answer.
+ *
+ * @type {boolean}
+ */
 let isReinsertingWords = false;
 
+// Poll for new word-bank answers and adapt them as necessary.
 setInterval(() => {
   const newWordBankAnswer = document.querySelector(ANSWER_SELECTOR);
 
@@ -97,3 +108,38 @@ setInterval(() => {
     };
   }
 }, 50);
+
+/**
+ * A CSS selector for word-bank answers.
+ *
+ * @type {string}
+ */
+const ANSWER_SELECTOR = '._3ysW7';
+
+/**
+ * A CSS selector for sources of words.
+ *
+ * @type {string}
+ */
+const SOURCE_SELECTOR = '[data-test="word-bank"]';
+
+/**
+ * The possible CSS selectors for word tokens.
+ *
+ * @type {string[]}
+ */
+const WORD_SELECTORS = [ '._2T0K5', '._10L3U', '.zVWkL' ];
+
+/**
+ * A CSS selector for word buttons anywhere on the page.
+ *
+ * @type {string}
+ */
+const WORD_BUTTON_SELECTOR = WORD_SELECTORS.map(`${it} button`).join(',');
+
+/**
+ * A CSS selector for word buttons in word-bank answers.
+ *
+ * @type {string}
+ */
+const DRAGGABLE_WORD_SELECTOR = WORD_SELECTORS.map(`${ANSWER_SELECTOR} ${it}`).join(',');
