@@ -5,7 +5,8 @@
         "webextensions": true
     },
     "extends": [
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:jsdoc/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -16,6 +17,7 @@
         "sourceType": "module"
     },
     "plugins": [
+        "jsdoc"
     ],
     "rules": {
     },
