@@ -64,7 +64,16 @@ setInterval(() => {
       try {
         // Add the words back, in the right order.
         sourceButtons
-          .map(button => [ sortedWords.indexOf(button.innerText.trim()), button ])
+          .map(button => {
+            const index = sortedWords.indexOf(button.innerText.trim());
+
+            if (index >= 0) {
+              // Do not reuse a same word button twice.
+              sortedWords[index] = null;
+            }
+
+            return [ index, button ];
+          })
           .filter(it[0] >= 0)
           .sort(lift(_[0] - _[0]))
           .forEach(it[1].click());
