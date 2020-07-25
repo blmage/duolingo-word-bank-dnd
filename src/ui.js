@@ -22,6 +22,25 @@ let lastWordBankAnswer = null;
  */
 let isReinsertingWords = false;
 
+/**
+ * @param {string} selectors The CSS selectors to match against the element ancestors.
+ * @param {number} maxLevel The maximum number of levels to go up in the tree.
+ * @param {Element} element The base element.
+ * @returns {boolean} Whether any ancestor of the given element matches the given selectors.
+ */
+function hasAncestorMatchingSelectors(selectors, maxLevel, element) {
+  let level = 0;
+  let parent = element;
+
+  while ((parent = parent.parentElement) && (level++ < maxLevel)) {
+    if (parent.matches(selectors)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // Poll for new word-bank answers and adapt them as necessary.
 setInterval(() => {
   const newWordBankAnswer = document.querySelector(ANSWER_SELECTOR);
@@ -53,7 +72,7 @@ setInterval(() => {
         // Trigger the word removal.
         button.click();
 
-        return button.parentNode.classList.contains('draggable--original')
+        return hasAncestorMatchingSelectors('.draggable--original', 3, button)
           ? ''
           : button.innerText.trim();
       }).filter(it.length > 0);
