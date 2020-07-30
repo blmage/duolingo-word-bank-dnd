@@ -5,9 +5,9 @@
 
 [![DeepScan grade](https://deepscan.io/api/teams/9459/projects/12778/branches/202380/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9459&pid=12778&bid=202380)
 ![ESLint](https://github.com/blmage/duolingo-word-bank-dnd/workflows/ESLint/badge.svg)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd?ref=badge_shield)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/dfpfeeojcakkdfiglfcccdlhdfejcmkg)](https://chrome.google.com/webstore/detail/duolingo-word-bank-dnd/dfpfeeojcakkdfiglfcccdlhdfejcmkg)
 [![Mozilla Add-on](https://img.shields.io/amo/v/duolingo-word-bank-dnd)](https://addons.mozilla.org/fr/firefox/addon/duolingo-word-bank-dnd/)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd?ref=badge_shield)
 
 A minimal browser extension for enabling the **drag'n'drop of words** in the **word-bank answers** of
 [Duolingo](https://www.duolingo.com).
@@ -43,7 +43,3 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
 
 If you encounter a bug, or if you have a suggestion regarding a new feature, don't hesitate to
 [open a related issue](https://github.com/blmage/duolingo-word-bank-dnd/issues/new)!
-
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd?ref=badge_large)
