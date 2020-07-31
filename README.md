@@ -24,6 +24,7 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
 
 * [**Chrome** extension](https://chrome.google.com/webstore/detail/duolingo-word-bank-dnd/dfpfeeojcakkdfiglfcccdlhdfejcmkg)
 * [**Firefox** add-on](https://addons.mozilla.org/fr/firefox/addon/duolingo-word-bank-dnd/)
+* [**Opera** addon](https://addons.opera.com/fr/extensions/details/duolingo-word-bank-dnd/)
 
 ### Demo
 
