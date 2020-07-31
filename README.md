@@ -44,10 +44,10 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
 
 The extension is also available as a userscript.
 
-If you're using [GreaseMonkey][https://www.greasespot.net/],
+If you're using [GreaseMonkey](https://www.greasespot.net/),
 [TamperMonkey](https://www.tampermonkey.net/), or
 [ViolentMonkey](https://violentmonkey.github.io/), click on 
-[this link](https://github.com/blmage/duolingo-word-bank-dnd/userscript/DuolingoWordBankDnd.user.js) 
+[this link](https://github.com/blmage/duolingo-word-bank-dnd/raw/master/userscript/DuolingoWordBankDnd.user.js) 
 to install it!
 
 ### Bug reports and feature requests
