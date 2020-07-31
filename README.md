@@ -17,6 +17,7 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
 * [Download](#download)
 * [Demo](#demo)
 * [Limitations](#limitations)
+* [Userscript](#userscript)
 * [Bug reports and feature requests](#bug-reports-and-feature-requests)
 
 ### Download
@@ -38,6 +39,16 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
       
     * if you're a developer, try to fix it yourself, then
       [open a related PR](https://github.com/blmage/duolingo-word-bank-dnd/compare).
+
+### Userscript
+
+The extension is also available as a userscript.
+
+If you're using [GreaseMonkey][https://www.greasespot.net/],
+[TamperMonkey](https://www.tampermonkey.net/), or
+[ViolentMonkey](https://violentmonkey.github.io/), click on 
+[this link](https://github.com/blmage/duolingo-word-bank-dnd/userscript/DuolingoWordBankDnd.user.js) 
+to install it!
 
 ### Bug reports and feature requests
 
