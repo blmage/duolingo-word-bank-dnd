@@ -133,7 +133,7 @@ setInterval(() => {
  *
  * @type {string}
  */
-const ANSWER_SELECTOR = '._3ysW7';
+const ANSWER_SELECTOR = '.PcKtj';
 
 /**
  * A CSS selector for sources of words.
@@ -147,7 +147,7 @@ const SOURCE_SELECTOR = '[data-test="word-bank"]';
  *
  * @type {string[]}
  */
-const WORD_SELECTORS = [ '._2T0K5', '._10L3U', '.zVWkL' ];
+const WORD_SELECTORS = [ '._1yW4j', '._2LmyT', '._1DaLk' ];
 
 /**
  * A CSS selector for word buttons anywhere on the page.
