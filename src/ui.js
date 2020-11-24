@@ -147,7 +147,7 @@ const SOURCE_SELECTOR = '[data-test="word-bank"]';
  *
  * @type {string[]}
  */
-const WORD_SELECTORS = [ '._1yW4j', '._2LmyT', '._1DaLk' ];
+const WORD_SELECTORS = [ '._1yW4j', '.JSl9i', '._2LmyT' ];
 
 /**
  * A CSS selector for word buttons anywhere on the page.
