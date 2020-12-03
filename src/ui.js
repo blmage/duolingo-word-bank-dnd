@@ -16,6 +16,34 @@ let lastHowlPrototype = null;
 let lastWordBankAnswer = null;
 
 /**
+ * The last seen overlay wrapper.
+ *
+ * @type {Element|null}
+ */
+let lastOverlayWrapper = null;
+
+/**
+ * Whether words fly into place rather than appearing directly in the answers.
+ *
+ * @type {boolean|null}
+ */
+let isUsingFlyingWords = null;
+
+/**
+ * The words that were present in the current answer before the user started dragging a word.
+ *
+ * @type {string[]}
+ */
+let originalAnswerWords = [];
+
+/**
+ * Whether the user is currently dragging a word in the current answer.
+ *
+ * @type {boolean}
+ */
+let isDraggingWord = false;
+
+/**
  * Whether we are currently reinserting words in the current answer.
  *
  * @type {boolean}
@@ -23,26 +51,192 @@ let lastWordBankAnswer = null;
 let isReinsertingWords = false;
 
 /**
- * @param {string} selectors The CSS selectors to match against the element ancestors.
- * @param {number} maxLevel The maximum number of levels to go up in the tree.
- * @param {Element} element The base element.
- * @returns {boolean} Whether any ancestor of the given element matches the given selectors.
+ * @type {Function}
+ * @param {Element} button A word button.
+ * @returns {boolean} Whether the given button is the original button for the currently dragged word.
  */
-function hasAncestorMatchingSelectors(selectors, maxLevel, element) {
-  let level = 0;
-  let parent = element;
+const isDraggedWordButton = it.classList.contains(DRAGGED_WORD_BUTTON_CLASS_NAME);
 
-  while ((parent = parent.parentElement) && (level++ < maxLevel)) {
-    if (parent.matches(selectors)) {
-      return true;
+/**
+ * @type {Function}
+ * @returns {Element[]} The list of all word buttons in the current answer.
+ */
+const getAnswerWordButtons = () => (
+  !lastWordBankAnswer
+    ? []
+    : Array.from(lastWordBankAnswer.querySelectorAll(WORD_BUTTON_SELECTOR))
+);
+
+/**
+ * @type {Function}
+ * @returns {string[]} The list of all relevant words in the current answer.
+ */
+const getAnswerWords = () => (
+  getAnswerWordButtons()
+    .map(button => isDraggedWordButton(button) ? '' : button.innerText.trim())
+    .filter(it.length > 0)
+);
+
+/**
+ * @type {Function}
+ * @param {number} offset The number of words to skip.
+ */
+const applyFlyingWordsOrder = offset => {
+  const wordBankSource = document.querySelector(SOURCE_SELECTOR);
+
+  if (!wordBankSource) {
+    return;
+  }
+
+  const sortedWords = [];
+  const wordButtons = Array.from(lastWordBankAnswer.querySelectorAll(WORD_BUTTON_SELECTOR)).slice(offset);
+
+  // Remove the necessary words one by one, to let everything animate smoothly.
+  const removeAnswerWords = () => {
+    const nextButton = wordButtons.shift();
+
+    if (nextButton) {
+      nextButton.click();
+
+      if (!isDraggedWordButton(nextButton)) {
+        const word = nextButton.innerText.trim();
+        ('' !== word) && sortedWords.push(word);
+      }
+
+      setTimeout(() => {
+        if (nextButton.isConnected) {
+          // If the button has not been removed by now, it is a (unwanted) leftover from the "draggable" plugin.
+          const leftoverElement = nextButton.closest(WORD_SELECTORS.join(',')) || nextButton;
+          leftoverElement.parentNode.removeChild(leftoverElement);
+        }
+
+        removeAnswerWords();
+      }, 1);
+
+      return;
+    }
+
+    // TTS sounds will be played when words are reinserted - prevent this.
+    isReinsertingWords = true;
+
+    setTimeout(reinsertAnswerWords, 1);
+  };
+
+  let hasReinsertionStarted = false;
+
+  // And do the same when reinserting words.
+  const reinsertAnswerWords = () => {
+    try {
+      const sourceButtons = Array.from(wordBankSource.querySelectorAll(WORD_BUTTON_SELECTOR));
+
+      // Wait for all the words to have flied back in place.
+      if (
+        hasReinsertionStarted
+        || !lastOverlayWrapper
+        || !lastOverlayWrapper.querySelector(OVERLAY_WORD_BUTTON_SELECTOR)
+      ) {
+        hasReinsertionStarted = true;
+        const nextWord = sortedWords.shift();
+        const nextButton = sourceButtons.find(!it.disabled && (nextWord === it.innerText.trim()));
+        nextButton && nextButton.click();
+      }
+
+      if (sortedWords.length > 0) {
+        setTimeout(reinsertAnswerWords, 1);
+      } else {
+        isReinsertingWords = false;
+      }
+    } catch (error) {
+      isReinsertingWords = false;
+      throw error;
+    }
+  };
+
+  removeAnswerWords();
+}
+
+/**
+ * @type {Function}
+ * @param {Event} event The "drag" event.
+ * @param {number} offset The number of words to skip.
+ */
+const applyNonFlyingWordsOrder = (event, offset) => {
+  const wordBankSource = document.querySelector(SOURCE_SELECTOR);
+
+  if (!wordBankSource) {
+    return;
+  }
+
+  const sortedWords = Array.from(lastWordBankAnswer.querySelectorAll(WORD_BUTTON_SELECTOR))
+    .slice(offset)
+    .map(button => {
+      button.click();
+      return isDraggedWordButton(button) ? '' : button.innerText.trim();
+    })
+    .filter(it.length > 0);
+
+  // Remove the additional button from the "draggable" plugin ourselves,
+  // because it is not always automatically cleaned up.
+  const dragSource = event.dragEvent.source;
+  const fakeSourceWrapper = document.createElement('div');
+  dragSource.parentNode.removeChild(dragSource);
+  fakeSourceWrapper.appendChild(dragSource);
+
+  // TTS sounds will be played when words are reinserted - prevent this.
+  isReinsertingWords = true;
+
+  // Add the words back, in the right order.
+  try {
+    Array.from(wordBankSource.querySelectorAll(WORD_BUTTON_SELECTOR))
+      .filter(!it.disabled)
+      .map(button => {
+        const index = sortedWords.indexOf(button.innerText.trim());
+
+        if (index >= 0) {
+          // Do not reuse a same word button twice.
+          sortedWords[index] = null;
+        }
+
+        return [ index, button ];
+      })
+      .filter(it[0] >= 0)
+      .sort(lift(_[0] - _[0]))
+      .forEach(it[1].click());
+  } catch (error) {
+    isReinsertingWords = false;
+    throw error;
+  }
+
+  isReinsertingWords = false;
+}
+
+const overlayMutationObserver = new MutationObserver(() => {
+  if (
+    lastOverlayWrapper
+    && (null !== lastOverlayWrapper.querySelector(OVERLAY_WORD_BUTTON_SELECTOR))
+  ) {
+    isUsingFlyingWords = true;
+    overlayMutationObserver.disconnect();
+  }
+});
+
+
+// Poll for new word-bank answers and prepare everything that is necessary.
+setInterval(() => {
+  const newOverlayWrapper = document.querySelector(OVERLAY_WRAPPER_SELECTOR);
+
+  if (newOverlayWrapper !== lastOverlayWrapper) {
+    lastOverlayWrapper = newOverlayWrapper;
+
+    if (!lastOverlayWrapper) {
+      return;
+    }
+
+    if (null === isUsingFlyingWords) {
+      overlayMutationObserver.observe(lastOverlayWrapper, { childList: true });
     }
   }
 
-  return false;
-}
-
-// Poll for new word-bank answers and adapt them as necessary.
-setInterval(() => {
   const newWordBankAnswer = document.querySelector(ANSWER_SELECTOR);
 
   if (newWordBankAnswer !== lastWordBankAnswer) {
@@ -59,60 +253,48 @@ setInterval(() => {
 
     sortable.removePlugin(Draggable.Plugins.Mirror);
 
+    sortable.on('drag:start', event => {
+      isDraggingWord = true;
+
+      lastWordBankAnswer
+        .querySelectorAll(`.${DRAGGED_WORD_BUTTON_CLASS_NAME}`)
+        .forEach(it.classList.remove(DRAGGED_WORD_BUTTON_CLASS_NAME));
+
+      const draggedButton = event.originalSource.querySelector(WORD_BUTTON_SELECTOR);
+
+      if (null !== draggedButton) {
+        draggedButton.classList.add(DRAGGED_WORD_BUTTON_CLASS_NAME);
+      }
+
+      originalAnswerWords = getAnswerWords();
+    });
+
     sortable.on('sortable:stop', event => {
-      const wordBankSource = document.querySelector(SOURCE_SELECTOR);
+      isDraggingWord = false;
 
-      if (!wordBankSource) {
-        return;
+      if (null === isUsingFlyingWords) {
+        isUsingFlyingWords = false;
+        overlayMutationObserver.disconnect();
       }
 
-      const answerWordButtons = Array.from(lastWordBankAnswer.querySelectorAll(WORD_BUTTON_SELECTOR));
+      const updatedAnswerWords = getAnswerWords();
 
-      const sortedWords = answerWordButtons.map(button => {
-        // Trigger the word removal.
-        button.click();
+      // Only reorder as many words as necessary.
+      let preservedWordCount = originalAnswerWords.findIndex(lift(_ !== updatedAnswerWords[_]));
 
-        return hasAncestorMatchingSelectors('.draggable--original', 3, button)
-          ? ''
-          : button.innerText.trim();
-      }).filter(it.length > 0);
-
-      // Sometimes, the "draggable" plugin does not clean everything up.
-      while (lastWordBankAnswer.firstChild) {
-        lastWordBankAnswer.removeChild(lastWordBankAnswer.firstChild);
+      if (-1 === preservedWordCount) {
+        if (updatedAnswerWords.length > originalAnswerWords.length) {
+          preservedWordCount = originalAnswerWords.length;
+        } else {
+          return;
+        }
       }
 
-      // The "draggable" plugin will attempt to move an element we have removed - make sure that it won't fail.
-      const fakeSourceWrapper = document.createElement('div');
-      fakeSourceWrapper.appendChild(event.dragEvent.source);
-
-      const sourceButtons = Array.from(wordBankSource.querySelectorAll(WORD_BUTTON_SELECTOR));
-
-      // TTS sounds will be played when words are reinserted - prevent this.
-      isReinsertingWords = true;
-
-      try {
-        // Add the words back, in the right order.
-        sourceButtons
-          .map(button => {
-            const index = sortedWords.indexOf(button.innerText.trim());
-
-            if (index >= 0) {
-              // Do not reuse a same word button twice.
-              sortedWords[index] = null;
-            }
-
-            return [ index, button ];
-          })
-          .filter(it[0] >= 0)
-          .sort(lift(_[0] - _[0]))
-          .forEach(it[1].click());
-      } catch (error) {
-        isReinsertingWords = false;
-        throw error;
+      if (isUsingFlyingWords) {
+        applyFlyingWordsOrder(preservedWordCount);
+      } else {
+        applyNonFlyingWordsOrder(event, preservedWordCount);
       }
-
-      isReinsertingWords = false;
     });
   }
 
@@ -127,6 +309,21 @@ setInterval(() => {
     };
   }
 }, 50);
+
+document.addEventListener('keydown', event => {
+  if (isDraggingWord && ('Backspace' === event.key)) {
+    // Do not allow the user to remove words when dragging, because it can mess things up (adding words is fine though).
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
+}, true)
+
+/**
+ * A CSS selector for overlay wrappers.
+ *
+ * @type {string}
+ */
+const OVERLAY_WRAPPER_SELECTOR = '#overlays';
 
 /**
  * A CSS selector for word-bank answers.
@@ -162,3 +359,17 @@ const WORD_BUTTON_SELECTOR = WORD_SELECTORS.map(`${it} button`).join(',');
  * @type {string}
  */
 const DRAGGABLE_WORD_SELECTOR = WORD_SELECTORS.map(`${ANSWER_SELECTOR} ${it}`).join(',');
+
+/**
+ * A CSS selector for flying word buttons in the overlay wrapper.
+ *
+ * @type {string}
+ */
+const OVERLAY_WORD_BUTTON_SELECTOR = 'button._1O290';
+
+/**
+ * The class name that is added to the original word button when a word is dragged.
+ *
+ * @type {string}
+ */
+const DRAGGED_WORD_BUTTON_CLASS_NAME = '_dnd_-dragged-word-button';
