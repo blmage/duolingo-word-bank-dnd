@@ -9,6 +9,13 @@ import { Draggable, Sortable } from '@shopify/draggable';
 let lastHowlPrototype = null;
 
 /**
+ * Whether the "howler.js" library is used to play sounds.
+ *
+ * @type {boolean}
+ */
+let isHowlerUsed = false;
+
+/**
  * The last seen word-bank answer.
  *
  * @type {Element|null}
@@ -144,7 +151,7 @@ const applyFlyingWordsOrder = offset => {
       if (sortedWords.length > 0) {
         setTimeout(reinsertAnswerWords, 1);
       } else {
-        isReinsertingWords = false;
+        setTimeout(() => (isReinsertingWords = false), 1);
       }
     } catch (error) {
       isReinsertingWords = false;
@@ -303,12 +310,25 @@ setInterval(() => {
     const originalHowlPlay = window.Howl.prototype.play;
 
     window.Howl.prototype.play = function (id) {
+      isHowlerUsed = true;
+
       if (!isReinsertingWords) {
         return originalHowlPlay.call(this, id);
       }
     };
   }
 }, 50);
+
+/**
+ * @type {Function}
+ */
+const originalAudioPlay = Audio.prototype.play;
+
+Audio.prototype.play = function () {
+  if (isHowlerUsed || !isReinsertingWords) {
+    return originalAudioPlay.call(this);
+  }
+};
 
 document.addEventListener('keydown', event => {
   if (isDraggingWord && ('Backspace' === event.key)) {
