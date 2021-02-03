@@ -1,6 +1,6 @@
 {
   "name": "Duolingo Word Bank Dnd",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Enables the drag'n'drop of words in the word-bank answers on Duolingo.",
   "permissions": [
     "activeTab",
