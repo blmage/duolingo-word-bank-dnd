@@ -202,7 +202,9 @@ const applyFlyingWordsOrder = offset => {
   // Reinsert the removed words in the right order, one by one, again to let everything animate smoothly.
   const reinsertAnswerWords = () => {
     try {
-      const sourceButtons = Array.from(lastWordBankSource?.querySelectorAll(SELECTOR_WORD_BUTTON));
+      const sourceButtons = !lastWordBankSource
+        ? []
+        : Array.from(lastWordBankSource.querySelectorAll(SELECTOR_WORD_BUTTON));
 
       // Wait for all the removed words to have flied back in place.
       if (hasReinsertionStarted || !isAnyWordFlying()) {
@@ -274,21 +276,23 @@ const applyNonFlyingWordsOrder = (offset, event = null) => {
 
   // Add the words back, in the right order.
   try {
-    Array.from(lastWordBankSource?.querySelectorAll(SELECTOR_WORD_BUTTON))
-      .filter(!it.disabled)
-      .map(button => {
-        const index = sortedWords.indexOf(button.innerText.trim());
+    if (lastWordBankSource) {
+      Array.from(lastWordBankSource.querySelectorAll(SELECTOR_WORD_BUTTON))
+        .filter(!it.disabled)
+        .map(button => {
+          const index = sortedWords.indexOf(button.innerText.trim());
 
-        if (index >= 0) {
-          // Do not reuse a same word button twice.
-          sortedWords[index] = null;
-        }
+          if (index >= 0) {
+            // Do not reuse a same word button twice.
+            sortedWords[index] = null;
+          }
 
-        return [ index, button ];
-      })
-      .filter(it[0] >= 0)
-      .sort(lift(_[0] - _[0]))
-      .forEach(it[1].click());
+          return [ index, button ];
+        })
+        .filter(it[0] >= 0)
+        .sort(lift(_[0] - _[0]))
+        .forEach(it[1].click());
+    }
   } finally {
     isReinsertingWords = false;
     isRearrangingWords = false;
