@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+  padding: .75em 1em;
+  font-size: 1.15em;
+  text-align: center;
+  background-color: #e5e5e5;
+}
+
+h1:before {
+  content: "";
+  display: block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-right: .75em;
+  background: url('../../icons/icon_128.png') no-repeat 50% 50%;
+  background-size: contain;
+}
+
+.field {
+  margin-bottom: 1em;
+  padding: 0 .75em;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  margin: .325em 0;
+  white-space: nowrap;
+}
+
+.field .field__title {
+  font-weight: bold;
+}
+
+.loading-overlay {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.is-loading .loading-overlay {
+  display: block;
+}
+
+.loading-spinner {
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  text-align: center;
+}
+
+.loading-spinner div {
+  display: block;
+  position: absolute;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  margin: 5px;
+  border: 5px solid #555;
+  border-color: #555 transparent transparent transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: loading-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.loading-spinner div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.loading-spinner div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.loading-spinner div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes loading-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

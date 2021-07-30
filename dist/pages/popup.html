@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Duolingo Word Bank Dnd</title>
+    <link rel="stylesheet" href="../assets/css/popup.css">
+</head>
+<body>
+<div class="container">
+    <h1>Word Bank Dnd</h1>
+    <div class="field">
+        <label for="enable-dnd-checkbox" class="field__title">
+            <input type="checkbox" id="enable-dnd-checkbox" name="enableDnd" />
+            Enable drag'n'drop
+        </label>
+    </div>
+    <div class="field">
+        <label for="enable-keyboard-shortcuts" class="field__title">
+            <input type="checkbox" id="enable-keyboard-shortcuts" name="enableKeyboardShortcuts" />
+            Enable keyboard shortcuts
+        </label>
+    </div>
+    <div class="field">
+        <label for="disable-word-buttons-tts" class="field__title">
+            <input type="checkbox" id="disable-word-buttons-tts" name="disableWordButtonsTts" />
+            Do not play TTS when adding words to answers
+        </label>
+    </div>
+    <div class="field">
+        <label for="disable-word-animation-always-checkbox" class="field__title">
+            Tone down word animation
+        </label>
+        <label for="disable-word-animation-always-checkbox">
+            <input
+                type="radio"
+                name="disableWordAnimation"
+                value="always"
+                id="disable-word-animation-always-checkbox"
+            />
+            Always
+        </label>
+        <label for="disable-word-animation-dnd-checkbox">
+            <input
+                type="radio"
+                name="disableWordAnimation"
+                value="dnd"
+                id="disable-word-animation-dnd-checkbox"
+            />
+            When rearranging words
+        </label>
+        <label for="disable-word-animation-never-checkbox">
+            <input
+                type="radio"
+                name="disableWordAnimation"
+                value="never"
+                id="disable-word-animation-never-checkbox"
+            />
+            Never
+        </label>
+    </div>
+    <div class="loading-overlay">
+        <div class="loading-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../src/popup.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
   "description": "A minimal browser extension for enabling the drag'n'drop of words in the word-bank answers on Duolingo.",
   "license": "MIT",
   "author": "blmage",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "homepage": "https://github.com/blmage/duolingo-word-bank-dnd",
   "scripts": {
     "build": "rollup -c --environment production",
@@ -11,23 +11,24 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@shopify/draggable": "^1.0.0-beta.12"
+    "@shopify/draggable": "^1.0.0-beta.12",
+    "chrome-storage-promise": "git+https://github.com/blmage/chrome-storage-promise.git",
+    "duo-toolbox": "git+https://github.com/blmage/duo-toolbox.git"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/preset-env": "^7.12.7",
-    "@rollup/plugin-babel": "^5.2.2",
+    "@babel/core": "^7.14.8",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/preset-env": "^7.14.8",
+    "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "@rollup/plugin-replace": "^2.3.4",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "@rollup/plugin-replace": "^2.4.2",
     "babel-plugin-macros": "^2.8.0",
-    "eslint": "^7.14.0",
-    "eslint-plugin-jsdoc": "^30.7.8",
-    "param.macro": "^3.2.1",
-    "rollup": "^2.34.1",
+    "eslint": "^7.31.0",
+    "eslint-plugin-jsdoc": "^30.7.13",
+    "one-liner.macro": "git+https://github.com/blmage/one-liner.macro.git",
+    "rollup": "^2.55.0",
     "rollup-plugin-strict-alias": "^1.0.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-userscript-metablock": "^0.2.7"
+    "rollup-plugin-terser": "^7.0.2"
   }
 }

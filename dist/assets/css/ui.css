@@ -1,0 +1,4 @@
+/* Found in the "sessions" stylesheet by searching for a 0.2s transition. */
+body._duo-wb-dnd_disabled_word_animation .-unOT {
+    transition-duration: 0s !important;
+}

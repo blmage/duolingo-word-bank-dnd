@@ -3,8 +3,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
-import userscriptMeta from 'rollup-plugin-userscript-metablock';
-import PACKAGE from './package.json';
 
 const { PRODUCTION } = process.env;
 
@@ -17,6 +15,7 @@ const plugins = [
     browser: true,
   }),
   replace({
+    preventAssignment: true,
     'process.env.NODE_ENV': JSON.stringify(PRODUCTION ? 'production' : 'development'),
   }),
   commonjs(),
@@ -26,7 +25,13 @@ if (PRODUCTION) {
   plugins.push(terser());
 }
 
-export default [ 'content', 'ui' ].map(source => ({
+export default [
+  'background',
+  'content',
+  'observer',
+  'popup',
+  'ui',
+].map(source => ({
   input: `src/${source}.js`,
   output: {
     file: `dist/src/${source}.js`,
@@ -34,23 +39,4 @@ export default [ 'content', 'ui' ].map(source => ({
   },
   treeshake: true,
   plugins,
-})).concat({
-  input: `src/ui.js`,
-  output: {
-    file: `userscript/DuolingoWordBankDnd.user.js`,
-    format: 'iife',
-  },
-  treeshake: true,
-  plugins: [
-    ...plugins,
-    userscriptMeta({
-      file: './userscript/meta.json',
-      override: {
-        version: PACKAGE.version,
-        homepage: PACKAGE.homepage,
-        author: PACKAGE.author,
-        license: PACKAGE.license,
-      },
-    }),
-  ],
-});
+}));
