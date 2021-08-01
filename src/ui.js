@@ -3,7 +3,7 @@ import { Draggable, Sortable } from '@shopify/draggable';
 import { noop } from 'duo-toolbox/utils/functions';
 import { discardEvent, isAnyInputFocused } from 'duo-toolbox/utils/ui';
 import { CONTEXT_CHALLENGE, getCurrentContext } from 'duo-toolbox/duo/context';
-import { onSoundPlaybackRequested } from 'duo-toolbox/duo/events';
+import { onSoundPlaybackRequested, onUiLoaded } from 'duo-toolbox/duo/events';
 import { SOUND_TYPE_TTS_WORD } from 'duo-toolbox/duo/sounds';
 import { onBackgroundEvent, sendActionRequestToContentScript } from 'duo-toolbox/extension/ipc';
 import { MUTEX_HOTKEYS, PRIORITY_LOWEST, requestMutex } from 'duo-toolbox/extension/ui';
@@ -449,10 +449,12 @@ const applyOptions = updated => {
   }
 };
 
-// Load the current set of options.
-sendActionRequestToContentScript(ACTION_TYPE_GET_OPTIONS)
-  .catch(() => DEFAULT_OPTIONS)
-  .then(applyOptions);
+// Load and apply the current set of options.
+onUiLoaded(() => {
+  sendActionRequestToContentScript(ACTION_TYPE_GET_OPTIONS)
+    .catch(() => DEFAULT_OPTIONS)
+    .then(applyOptions);
+});
 
 // Applies the new set of options every time a change occurs.
 onBackgroundEvent((event, payload) => (BACKGROUND_EVENT_TYPE_OPTIONS_CHANGED === event) && applyOptions(payload));
