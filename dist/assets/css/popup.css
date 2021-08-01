@@ -31,12 +31,16 @@ h1:before {
 .field label {
   display: flex;
   align-items: center;
-  margin: .325em 0;
+  margin: .325em 4px .325em 0;
   white-space: nowrap;
 }
 
 .field .field__title {
   font-weight: bold;
+}
+
+.field input {
+  margin-left: 4px;
 }
 
 .loading-overlay {
