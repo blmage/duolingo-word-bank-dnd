@@ -16,6 +16,8 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
 
 * [Download](#download)
 * [Demo](#demo)
+* [Customization options](#customization-options)
+* [Keyboard shortcuts](#keyboard-shortcuts)
 * [Limitations](#limitations)
 * [Bug reports and feature requests](#bug-reports-and-feature-requests)
 
@@ -28,6 +30,60 @@ A minimal browser extension for enabling the **drag'n'drop of words** in the **w
 ### Demo
 
 <img src="https://i.imgur.com/7HzpWat.gif" alt="Demo" width="600" />
+
+### Customization options
+
+Click on the 
+<img align="center" width="16" height="16" src="https://raw.githubusercontent.com/blmage/duolingo-word-bank-dnd/master/dist/icons/icon_48.png" /> 
+extension icon in your browser toolbar to open the customization popup:
+
+<img width="312" height="230" src="https://raw.githubusercontent.com/blmage/duolingo-word-bank-dnd/assets_v2/screenshots/popup.png" />
+
+Any change you apply will immediately take effect.
+
+#### Enable drag'n'drop
+
+*Default: Enabled*
+
+When this option is enabled, words can be moved around in answers using the mouse.
+
+#### Enable keyboard shortcuts
+
+*Default: Enabled*
+
+When this option is enabled, words can be moved around in anwsers using the keyboard 
+(see [keyboard shortcuts](#keyboard-shortcuts)).
+
+#### Do not play TTS when adding words to answers
+
+*Default: Disabled*
+
+When this option is enabled, words will never be read aloud when added to an answer.
+
+#### Tone down word animation
+
+*Default: Never*
+
+When this option is enabled, the "flying words" animation will be "softened" as much as possible:
+
+| Without       | With          |
+| ------------- | ------------- |
+| <img align="center" width="300" height="268" src="https://raw.githubusercontent.com/blmage/duolingo-word-bank-dnd/assets_v2/demos/option_dnd_flying_words.gif" /> | <img align="center" width="300" height="268" src="https://raw.githubusercontent.com/blmage/duolingo-word-bank-dnd/assets_v2/demos/option_dnd_no_flying_words.gif" /> |
+
+
+### Keyboard shortcuts
+
+When a word bank is active (and no other extension has the focus), use:
+
+- the `←` / `→` arrows to select a word,
+
+- the `←` / `→` arrows while holding `Ctrl` to move the selected word in the answer
+  (release `Ctrl` to apply the new position),
+
+- `Del` to remove the selected word from the answer,
+
+- `Backspace` to remove the last word of the answer.
+  
 
 ### Limitations
 
