@@ -39,7 +39,7 @@ extension icon in your browser toolbar to open the customization popup:
 
 <img width="312" height="230" src="https://raw.githubusercontent.com/blmage/duolingo-word-bank-dnd/assets_v2/screenshots/popup.png" />
 
-Any change you apply will immediately take effect.
+Any changes you make will immediately take effect.
 
 #### Enable drag'n'drop
 
@@ -51,7 +51,7 @@ When this option is enabled, words can be moved around in answers using the mous
 
 *Default: Enabled*
 
-When this option is enabled, words can be moved around in anwsers using the keyboard 
+When this option is enabled, words can be moved around in answers using the keyboard 
 (see [keyboard shortcuts](#keyboard-shortcuts)).
 
 #### Do not play TTS when adding words to answers
@@ -77,8 +77,8 @@ When a word bank is active (and no other extension has the focus), use:
 
 - the `←` / `→` arrows to select a word,
 
-- the `←` / `→` arrows while holding `Ctrl` to move the selected word in the answer
-  (release `Ctrl` to apply the new position),
+- the `←` / `→` arrows while holding `Ctrl` to move around the selected word in the answer
+  (release `Ctrl` to apply the changes),
 
 - `Del` to remove the selected word from the answer,
 
