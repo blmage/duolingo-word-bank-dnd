@@ -138,11 +138,18 @@ const getAnswerWordButtons = () => (
 );
 
 /**
+ * @type {Function}
+ * @param {Node} button A word button.
+ * @returns {string} The corresponding word.
+ */
+const getWordButtonWord = (it.childNodes[0] || it).textContent.trim();
+
+/**
  * @returns {string[]} The list of all relevant words in the current answer.
  */
 const getAnswerWords = () => (
   getAnswerWordButtons()
-    .map(button => isDraggedWordButton(button) ? '' : button.innerText.trim())
+    .map(button => isDraggedWordButton(button) ? '' : getWordButtonWord(button))
     .filter(it.length > 0)
 );
 
@@ -174,7 +181,7 @@ const applyFlyingWordsOrder = offset => {
       nextButton.click();
 
       if (!isDraggedWordButton(nextButton)) {
-        const word = nextButton.innerText.trim();
+        const word = getWordButtonWord(nextButton);
         ('' !== word) && sortedWords.push(word);
       }
 
@@ -210,7 +217,7 @@ const applyFlyingWordsOrder = offset => {
       if (hasReinsertionStarted || !isAnyWordFlying()) {
         hasReinsertionStarted = true;
         const nextWord = sortedWords.shift();
-        const nextButton = sourceButtons.find(!it.disabled && (nextWord === it.innerText.trim()));
+        const nextButton = sourceButtons.find(button => !button.disabled && (nextWord === getWordButtonWord(button)));
         nextButton && nextButton.click();
       }
 
@@ -258,7 +265,7 @@ const applyNonFlyingWordsOrder = (offset, event = null) => {
     .slice(offset)
     .map(button => {
       button.click();
-      return isDraggedWordButton(button) ? '' : button.innerText.trim();
+      return isDraggedWordButton(button) ? '' : getWordButtonWord(button);
     })
     .filter(it.length > 0);
 
@@ -280,7 +287,7 @@ const applyNonFlyingWordsOrder = (offset, event = null) => {
       Array.from(lastWordBankSource.querySelectorAll(SELECTOR_WORD_BUTTON))
         .filter(!it.disabled)
         .map(button => {
-          const index = sortedWords.indexOf(button.innerText.trim());
+          const index = sortedWords.indexOf(getWordButtonWord(button));
 
           if (index >= 0) {
             // Do not reuse a same word button twice.
