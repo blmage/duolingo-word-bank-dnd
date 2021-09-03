@@ -140,6 +140,13 @@ const getAnswerWordButtons = () => (
 /**
  * @type {Function}
  * @param {Node} button A word button.
+ * @returns {string} Whether the given button is disabled.
+ */
+const isWordButtonDisabled = it.disabled || ('true' === it.ariaDisabled);
+
+/**
+ * @type {Function}
+ * @param {Node} button A word button.
  * @returns {string} The corresponding word.
  */
 const getWordButtonWord = (it.childNodes[0] || it).textContent.trim();
@@ -217,7 +224,12 @@ const applyFlyingWordsOrder = offset => {
       if (hasReinsertionStarted || !isAnyWordFlying()) {
         hasReinsertionStarted = true;
         const nextWord = sortedWords.shift();
-        const nextButton = sourceButtons.find(button => !button.disabled && (nextWord === getWordButtonWord(button)));
+
+        const nextButton = sourceButtons.find(button => (
+          !isWordButtonDisabled(button)
+          && (getWordButtonWord(button) === nextWord)
+        ));
+
         nextButton && nextButton.click();
       }
 
