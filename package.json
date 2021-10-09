@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@shopify/draggable": "^1.0.0-beta.12",
-    "chrome-storage-promise": "git+https://github.com/blmage/chrome-storage-promise.git",
-    "duo-toolbox": "git+https://github.com/blmage/duo-toolbox.git"
+    "chrome-storage-promise": "git+https://github.com/blmage/chrome-storage-promise.git#semver:^1.0.0",
+    "duo-toolbox": "git+https://github.com/blmage/duo-toolbox.git#semver:^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",
@@ -26,7 +26,7 @@
     "babel-plugin-macros": "^2.8.0",
     "eslint": "^7.31.0",
     "eslint-plugin-jsdoc": "^30.7.13",
-    "one-liner.macro": "git+https://github.com/blmage/one-liner.macro.git",
+    "one-liner.macro": "git+https://github.com/blmage/one-liner.macro.git#semver:^3.2.2-patch",
     "rollup": "^2.55.0",
     "rollup-plugin-strict-alias": "^1.0.0",
     "rollup-plugin-terser": "^7.0.2"
