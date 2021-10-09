@@ -1,4 +1,4 @@
-import { _, it, lift } from 'one-liner.macro';
+import { _, _1, it, lift } from 'one-liner.macro';
 import { Draggable, Sortable } from '@shopify/draggable';
 import { noop } from 'duo-toolbox/utils/functions';
 import { discardEvent, isAnyInputFocused } from 'duo-toolbox/utils/ui';
@@ -531,6 +531,13 @@ const markDraggedWordButton = button => {
   button?.classList.add(CLASS_NAME_DRAGGED_WORD_BUTTON);
 };
 
+/**
+ * @returns {Element[]} The currently dragged word buttons.
+ */
+const getDraggedWordButtons = () => Array.from(
+  lastWordBankAnswer?.getElementsByClassName(CLASS_NAME_DRAGGED_WORD_BUTTON) || []
+);
+
 setInterval(() => {
   // Poll for new overlay wrappers to setup the detection of the words animation.
   const newOverlayWrapper = document.querySelector(SELECTOR_OVERLAY_WRAPPER);
@@ -607,12 +614,28 @@ setInterval(() => {
         overlayMutationObserver.disconnect();
       }
 
+      const allAnswerWordButtons = getAnswerWordButtons();
       const updatedAnswerWords = getAnswerWords();
 
-      // Only reorder as many words as necessary.
-      let preservedWordCount = originalAnswerWords.findIndex(lift(_ !== updatedAnswerWords[_]));
+      const draggedWordButtons = getDraggedWordButtons();
+      const draggedWords = draggedWordButtons.map(getWordButtonWord(_));
 
-      if (-1 === preservedWordCount) {
+      // Only reorder as many words as necessary.
+      let preservedWordCount = Math.min(
+        ...[
+          // The dragged button should always be removed, to prevent any timing bug.
+          ...draggedWordButtons.map(allAnswerWordButtons.indexOf(_)),
+          // First difference between two words.
+          originalAnswerWords.findIndex(lift(_ !== updatedAnswerWords[_])),
+          // Account for false negatives that occur when a word is dragged to the left of the exact same word.
+          ...draggedWords
+            .map(updatedAnswerWords.indexOf(_))
+            .filter(lift(_ >= 0))
+            .filter(lift(updatedAnswerWords[_1] === updatedAnswerWords[_1 + 1])),
+        ].filter(lift(_ >= 0))
+      );
+
+      if ((-1 === preservedWordCount) || (Infinity === preservedWordCount)) {
         if (updatedAnswerWords.length > originalAnswerWords.length) {
           preservedWordCount = originalAnswerWords.length;
         } else {
