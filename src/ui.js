@@ -1,4 +1,4 @@
-import { _, _1, it, lift } from 'one-liner.macro';
+import { _, it, lift } from 'one-liner.macro';
 import { Draggable, Sortable } from '@shopify/draggable';
 import { noop } from 'duo-toolbox/utils/functions';
 import { discardEvent, isAnyInputFocused } from 'duo-toolbox/utils/ui';
