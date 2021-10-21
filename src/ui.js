@@ -614,24 +614,30 @@ setInterval(() => {
         overlayMutationObserver.disconnect();
       }
 
-      const allAnswerWordButtons = getAnswerWordButtons();
       const updatedAnswerWords = getAnswerWords();
-
       const draggedWordButtons = getDraggedWordButtons();
       const draggedWords = draggedWordButtons.map(getWordButtonWord(_));
 
       // Only reorder as many words as necessary.
       let preservedWordCount = Math.min(
         ...[
-          // The dragged button should always be removed, to prevent any timing bug.
-          ...draggedWordButtons.map(allAnswerWordButtons.indexOf(_)),
           // First difference between two words.
           originalAnswerWords.findIndex(lift(_ !== updatedAnswerWords[_])),
           // Account for false negatives that occur when a word is dragged to the left of the exact same word.
           ...draggedWords
             .map(updatedAnswerWords.indexOf(_))
-            .filter(lift(_ >= 0))
-            .filter(lift(updatedAnswerWords[_1] === updatedAnswerWords[_1 + 1])),
+            .filter(index => (
+              (index >= 0)
+              && (updatedAnswerWords[index] === updatedAnswerWords[index + 1])
+            )),
+          // Account for false negatives that occur when a word is dragged from the left of the exact same word.
+          ...draggedWords
+            .map(originalAnswerWords.indexOf(_))
+            .filter(index => (
+              (index >= 0)
+              && (originalAnswerWords[index] === originalAnswerWords[index + 1])
+              && (updatedAnswerWords[index] !== updatedAnswerWords[index + 1])
+            )),
         ].filter(lift(_ >= 0))
       );
 
