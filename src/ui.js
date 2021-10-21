@@ -297,7 +297,7 @@ const applyNonFlyingWordsOrder = (offset, event = null) => {
   try {
     if (lastWordBankSource) {
       Array.from(lastWordBankSource.querySelectorAll(SELECTOR_WORD_BUTTON))
-        .filter(!it.disabled)
+        .filter(!isWordButtonDisabled(_))
         .map(button => {
           const index = sortedWords.indexOf(getWordButtonWord(button));
 
