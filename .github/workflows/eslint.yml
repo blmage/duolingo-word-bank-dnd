@@ -1,13 +1,11 @@
 name: ESLint
-
 on: [push]
-
 jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: blmage/eslint-action@1.1.0
-        with:
-          files: src/
-          maxWarnings: 0
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: yarn
+    - name: Run ESLint
+      run: eslint src --ext .js,.jsx,.ts,.tsx
