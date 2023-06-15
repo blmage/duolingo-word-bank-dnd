@@ -5,7 +5,6 @@
 
 [![DeepScan grade](https://deepscan.io/api/teams/9459/projects/12778/branches/202380/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9459&pid=12778&bid=202380)
 ![ESLint](https://github.com/blmage/duolingo-word-bank-dnd/workflows/ESLint/badge.svg)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fblmage%2Fduolingo-word-bank-dnd?ref=badge_shield)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/dfpfeeojcakkdfiglfcccdlhdfejcmkg)](https://chrome.google.com/webstore/detail/duolingo-word-bank-dnd/dfpfeeojcakkdfiglfcccdlhdfejcmkg)
 [![Mozilla Add-on](https://img.shields.io/amo/v/duolingo-word-bank-dnd)](https://addons.mozilla.org/fr/firefox/addon/duolingo-word-bank-dnd/)
 
