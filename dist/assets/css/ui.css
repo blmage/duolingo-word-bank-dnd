@@ -1,4 +1,5 @@
 /* Found in the "sessions" stylesheet by searching for a 0.2s transition. */
-body._duo-wb-dnd_disabled_word_animation .-unOT {
+body._duo-wb-dnd_disabled_word_animation .-unOT,
+body._duo-wb-dnd_disabled_word_animation button[data-test$="tap-token"] {
     transition-duration: 0s !important;
 }
