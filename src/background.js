@@ -20,7 +20,7 @@ const handleOptionsRequest = async sendResult => {
 };
 
 /**
- * @param {Object} data A new set of options.
+ * @param {object} data A new set of options.
  * @param {Function} sendResult A function usable to notify the success of the update.
  * @returns {Promise<void>}
  */

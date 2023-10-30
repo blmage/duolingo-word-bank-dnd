@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} Options
+ * @typedef {object} Options
  * @property {boolean} enableDnd Whether the drag'n'drop of words should be enabled.
  * @property {boolean} enableKeyboardShortcuts Whether the keyboard shortcuts should be enabled.
  * @property {boolean} disableWordButtonsTts Whether sounds should not be played when a word is added to an answer.

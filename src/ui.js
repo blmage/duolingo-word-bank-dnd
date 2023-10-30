@@ -17,98 +17,84 @@ let options = DEFAULT_OPTIONS;
 
 /**
  * The last seen word-bank answer.
- *
  * @type {Element|null}
  */
 let lastWordBankAnswer = null;
 
 /**
  * The last seen word-bank source.
- *
  * @type {Element|null}
  */
 let lastWordBankSource = null;
 
 /**
  * The last seen wrapper of overlays.
- *
  * @type {Element|null}
  */
 let lastOverlayWrapper = null;
 
 /**
  * Whether words fly into place rather than appearing directly in the answers.
- *
  * @type {boolean|null}
  */
 let isUsingFlyingWords = null;
 
 /**
  * The words that were present in the current answer before the user started dragging a word.
- *
  * @type {string[]}
  */
 let originalAnswerWords = [];
 
 /**
  * The callback usable to release the hotkeys mutex, once it has been acquired.
- *
  * @type {Function|null}
  */
 let hotkeysMutexReleaseCallback = null;
 
 /**
  * Whether a (pending) request has been made to acquire the hotkeys mutex.
- *
  * @type {boolean}
  */
 let hasPendingHotkeysMutexRequest = false;
 
 /**
  * Whether the user is currently dragging a word in the current answer.
- *
  * @type {boolean}
  */
 let isDraggingWord = false;
 
 /**
  * Whether the user is currently moving a word in the current answer using the keyboard shortcuts.
- *
  * @type {boolean}
  */
 let isMovingWord = false;
 
 /**
  * Whether we are currently rearranging words in the current answer.
- *
  * @type {boolean}
  */
 let isRearrangingWords = false;
 
 /**
  * Whether we are currently reinserting words in the current answer.
- *
  * @type {boolean}
  */
 let isReinsertingWords = false;
 
 /**
  * The last time a word action occurred (a word button was clicked, or a key was pressed).
- *
  * @type {number|null}
  */
 let lastWordActionAt = null;
 
 /**
  * The index of the word button that is currently selected using the keyboard shortcuts.
- *
  * @type {number|null}
  */
 let selectedWordButtonIndex = null;
 
 /**
  * The original index of the selected word button that is being moved using the keyboard shortcuts.
- *
  * @type {number|null}
  */
 let originalSelectedWordButtonIndex = null;
@@ -173,7 +159,6 @@ const getAnswerWords = () => (
  * Captures and reapplies the order of words in the current answer, so that the React UI takes it into account.
  *
  * This function uses a small delay between each operation, to account for the words animation.
- *
  * @param {number} offset The number of words to skip from the beginning.
  * @returns {void}
  */
@@ -270,7 +255,6 @@ const applyFlyingWordsOrder = offset => {
  * Captures and reapplies the order of words in the current answer, so that the React UI takes it into account.
  *
  * This function assumes that the words are not animated, and therefore does not use any delay.
- *
  * @param {number} offset The number of words to skip from the beginning.
  * @param {Event|null} event The "drag" event at the origin of the new word order, if any.
  * @returns {void}
@@ -330,7 +314,6 @@ const applyNonFlyingWordsOrder = (offset, event = null) => {
 
 /**
  * Captures and reapplies the order of words in the current answer, so that the React UI takes it into account.
- *
  * @param {number} offset The number of words to skip from the beginning.
  * @param {Event|null} event The "drag" event at the origin of the new word order, if any.
  * @returns {void}
@@ -349,7 +332,6 @@ const applyWordsOrder = (offset, event = null) => {
 
 /**
  * Reflects the currently selected button on the UI.
- *
  * @param {Element[]|null} buttons The word buttons of the current answer.
  * @returns {void}
  */
@@ -369,7 +351,6 @@ const refreshWordButtonsState = (buttons = null) => {
  * If no button has been selected yet, the first or last button will be selected.
  *
  * If there is no button in the given direction, no other button will be selected..
- *
  * @param {string} direction A direction.
  * @returns {void}
  */
@@ -393,7 +374,6 @@ const selectNextWordButton = direction => {
 
 /**
  * Moves the currently selected word button in a given direction in the answer.
- *
  * @param {string} direction A direction.
  * @returns {void}
  */
@@ -439,7 +419,6 @@ const moveSelectedWordButton = direction => {
 
 /**
  * Removes the currently selected word button from the answer.
- *
  * @returns {void}
  */
 const removeSelectedWordButton = () => {
@@ -452,7 +431,6 @@ const removeSelectedWordButton = () => {
 
 /**
  * Toggles on / off the animation of words.
- *
  * @type {Function}
  * @param {boolean} enabled Whether words should be animated.
  * @returns {void}
@@ -461,7 +439,6 @@ const toggleWordAnimation = document.body.classList.toggle(`_duo-wb-dnd_disabled
 
 /**
  * Applies a new set of options.
- *
  * @param {import('./options.js').Options} updated The new set of options.
  * @returns {void}
  */
@@ -528,7 +505,6 @@ const wordBankAnswerMutationObserver = new MutationObserver(() => {
 
 /**
  * Marks a word button from the current word-bank answer as dragged, or unmarks all of them.
- *
  * @param {Element|null} button A word button, or null if all buttons should be unmarked.
  * @returns {void}
  */
@@ -718,7 +694,6 @@ onSoundPlaybackRequested(sound => !(
 /**
  * Attempts to acquire the hotkeys mutex whenever it becomes available, but with the lowest possible priority,
  * always giving back control when another extension requests it (unless a word is being moved around).
- *
  * @returns {void}
  */
 const requestHotkeysMutex = () => {
@@ -821,7 +796,6 @@ document.addEventListener('keyup', event => {
 
 /**
  * The number of milliseconds during which not to play TTS after a word action occurred.
- *
  * @type {number}
  */
 const WORD_ACTION_TTS_DELAY = 100;
@@ -838,49 +812,42 @@ const DIRECTION_RIGHT = 'right';
 
 /**
  * A CSS selector for overlay wrappers.
- *
  * @type {string}
  */
 const SELECTOR_OVERLAY_WRAPPER = '#overlays';
 
 /**
  * A CSS selector for word-bank answers.
- *
  * @type {string}
  */
 const SELECTOR_ANSWER = '.PcKtj';
 
 /**
  * A CSS selector for sources of words.
- *
  * @type {string}
  */
 const SELECTOR_WORD_SOURCE = '[data-test="word-bank"]';
 
 /**
  * The possible CSS selectors for word tokens.
- *
  * @type {string[]}
  */
 const WORD_SELECTORS = [ '._1yW4j', '.JSl9i', '._2LmyT' ];
 
 /**
  * A CSS selector for word buttons anywhere on the page.
- *
  * @type {string}
  */
 const SELECTOR_WORD_BUTTON = WORD_SELECTORS.map(`${it} button`).join(',');
 
 /**
  * A CSS selector for word buttons in word-bank answers.
- *
  * @type {string}
  */
 const SELECTOR_DRAGGABLE_WORD = WORD_SELECTORS.map(`${SELECTOR_ANSWER} ${it}`).join(',');
 
 /**
  * A CSS selector for flying word buttons in the overlay wrapper.
- *
  * @type {string}
  */
 const SELECTOR_OVERLAY_WORD_BUTTON = 'button._1O290';
@@ -890,21 +857,18 @@ const SELECTOR_OVERLAY_WORD_BUTTON = 'button._1O290';
  *
  * Copied by searching for a suitable class in the "sessions" stylesheet,
  * while taking into account the fact that parts of the words may already be highlighted if the keyboard was used.
- *
  * @type {string}
  */
 const CLASS_NAME_HIGHLIGHTED_WORD_BUTTON = 'pmjld';
 
 /**
  * The class name that is added to the original word button when a word is dragged.
- *
  * @type {string}
  */
 const CLASS_NAME_DRAGGED_WORD_BUTTON = '_dnd_-dragged-word-button';
 
 /**
  * A CSS selector for the word inside word buttons.
- *
  * @type {string}
  */
 const SELECTOR_WORD_BUTTON_WORD = '._2J2do, ._3PW0K';

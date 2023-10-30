@@ -10,7 +10,7 @@ import { DEFAULT_OPTIONS } from './options';
 const LOADING_CLASS_NAME = 'is-loading';
 
 /**
- * @type {Object<string, Element>}
+ * @type {{[key: string]: Element}}
  */
 const configCheckboxes = Object.fromEntries(
   Array.from(document.querySelectorAll('input[type="checkbox"]'))
@@ -18,7 +18,7 @@ const configCheckboxes = Object.fromEntries(
 );
 
 /**
- * @type {Object<string, Object<string, Element>>}
+ * @type {{[key: string]: {[key: string]: Element}}}
  */
 const configRadioGroups = Array.from(document.querySelectorAll('input[type="radio"]'))
   .reduce((groups, radio) => {
