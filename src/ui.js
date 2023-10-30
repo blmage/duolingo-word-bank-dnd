@@ -1,6 +1,6 @@
 import { _, it, lift } from 'one-liner.macro';
 import { Draggable, Sortable } from '@shopify/draggable';
-import { noop } from 'duo-toolbox/utils/functions';
+import { isArray, isObject, noop } from 'duo-toolbox/utils/functions';
 import { discardEvent, isAnyInputFocused } from 'duo-toolbox/utils/ui';
 import { CONTEXT_CHALLENGE, getCurrentContext } from 'duo-toolbox/duo/context';
 import { onSoundPlaybackRequested, onUiLoaded } from 'duo-toolbox/duo/events';
@@ -149,7 +149,16 @@ const isWordButtonDisabled = it.disabled || ('true' === it.ariaDisabled);
  * @param {Node} button A word button.
  * @returns {string} The corresponding word.
  */
-const getWordButtonWord = (it.childNodes[0] || it).textContent.trim();
+const getWordButtonWord = button => {
+  let baseWord = button.querySelector(SELECTOR_WORD_BUTTON_WORD) || button;
+
+  if (baseWord.querySelector('rt')) {
+    baseWord = baseWord.cloneNode(true);
+    baseWord.querySelectorAll('rt').forEach(it.remove());
+  }
+
+  return baseWord.textContent.trim();
+}
 
 /**
  * @returns {string[]} The list of all relevant words in the current answer.
@@ -393,7 +402,7 @@ const moveSelectedWordButton = direction => {
     const wordButtons = getAnswerWordButtons();
 
     if (wordButtons[selectedWordButtonIndex]) {
-      const selectedWrapper = wordButtons[selectedWordButtonIndex].parentNode;
+      const selectedWrapper = wordButtons[selectedWordButtonIndex].closest(SELECTOR_DRAGGABLE_WORD);
 
       if (null === originalSelectedWordButtonIndex) {
         originalSelectedWordButtonIndex = selectedWordButtonIndex;
@@ -407,7 +416,7 @@ const moveSelectedWordButton = direction => {
 
         selectedWrapper.parentNode.insertBefore(
           selectedWrapper,
-          wordButtons[selectedWordButtonIndex - 1].parentNode
+          wordButtons[selectedWordButtonIndex - 1].closest(SELECTOR_DRAGGABLE_WORD)
         );
 
         selectedWordButtonIndex -= 1;
@@ -418,7 +427,7 @@ const moveSelectedWordButton = direction => {
         isMovingWord = true;
 
         selectedWrapper.parentNode.insertBefore(
-          wordButtons[selectedWordButtonIndex + 1].parentNode,
+          wordButtons[selectedWordButtonIndex + 1].closest(SELECTOR_DRAGGABLE_WORD),
           selectedWrapper
         );
 
@@ -538,6 +547,34 @@ const getDraggedWordButtons = () => Array.from(
   lastWordBankAnswer?.getElementsByClassName(CLASS_NAME_DRAGGED_WORD_BUTTON) || []
 );
 
+/**
+ * @param {Element} element A word element.
+ * @returns {boolean} Whether the given word can be dragged natively.
+ */
+const isNativeDraggableWord = element => {
+  const isDraggableProps = props => {
+    if (isObject(props)) {
+      if (true === props.draggable) {
+        return true;
+      } else if (isArray(props.children)) {
+        return props.children.some(isDraggableProps(it?.props));
+      } else if (isObject(props.children)) {
+        return isDraggableProps(props.children.props);
+      }
+    }
+
+    return false;
+  };
+
+  for (const [ key, value ] of Object.entries(element)) {
+    if (key.match(/^__reactProps\$.+$/)) {
+      return isDraggableProps(value);
+    }
+  }
+
+  return false;
+};
+
 setInterval(() => {
   // Poll for new overlay wrappers to setup the detection of the words animation.
   const newOverlayWrapper = document.querySelector(SELECTOR_OVERLAY_WRAPPER);
@@ -587,6 +624,12 @@ setInterval(() => {
       { childList: true, subtree: true }
     );
 
+    const word = lastWordBankAnswer.querySelector(SELECTOR_DRAGGABLE_WORD);
+
+    if (word && isNativeDraggableWord(word)) {
+      return;
+    }
+
     const sortable = new Sortable(lastWordBankAnswer, {
       draggable: SELECTOR_DRAGGABLE_WORD,
       distance: 5,
@@ -595,7 +638,12 @@ setInterval(() => {
     sortable.removePlugin(Draggable.Plugins.Mirror);
 
     sortable.on('drag:start', event => {
-      if (!options.enableDnd || isMovingWord || !isChallengeUncompleted()) {
+      if (
+        !options.enableDnd
+        || isMovingWord
+        || !isChallengeUncompleted()
+        || isNativeDraggableWord(event.originalSource.closest(SELECTOR_DRAGGABLE_WORD))
+      ) {
         event.cancel();
         return;
       }
@@ -853,3 +901,10 @@ const CLASS_NAME_HIGHLIGHTED_WORD_BUTTON = 'pmjld';
  * @type {string}
  */
 const CLASS_NAME_DRAGGED_WORD_BUTTON = '_dnd_-dragged-word-button';
+
+/**
+ * A CSS selector for the word inside word buttons.
+ *
+ * @type {string}
+ */
+const SELECTOR_WORD_BUTTON_WORD = '._2J2do, ._3PW0K';
