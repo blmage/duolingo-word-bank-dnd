@@ -16,6 +16,12 @@ import { DEFAULT_OPTIONS, OPTION_TIMING_ALWAYS, OPTION_TIMING_NEVER, OPTION_TIMI
 let options = DEFAULT_OPTIONS;
 
 /**
+ * Whether the "flying" animation of words should currently be disabled.
+ * @type {boolean}
+ */
+let isWordAnimationDisabled = false;
+
+/**
  * The last seen word-bank answer.
  * @type {Element|null}
  */
@@ -435,7 +441,10 @@ const removeSelectedWordButton = () => {
  * @param {boolean} enabled Whether words should be animated.
  * @returns {void}
  */
-const toggleWordAnimation = document.body.classList.toggle(`_duo-wb-dnd_disabled_word_animation`, !_);
+const toggleWordAnimation = enabled => {
+  isWordAnimationDisabled = !enabled;
+  document.body.classList.toggle(`_duo-wb-dnd_disabled_word_animation`, !isWordAnimationDisabled);
+};
 
 /**
  * Applies a new set of options.
@@ -464,11 +473,25 @@ onUiLoaded(() => {
 // Applies the new set of options every time a change occurs.
 onBackgroundEvent((event, payload) => (BACKGROUND_EVENT_TYPE_OPTIONS_CHANGED === event) && applyOptions(payload));
 
-// Observe mutations on overlay wrappers to detect whether words are animated.
-const overlayMutationObserver = new MutationObserver(() => {
+// Observe mutations on overlay wrappers to detect whether words are animated,
+// and tone down their animation when required.
+const overlayMutationObserver = new MutationObserver(records => {
   if (lastOverlayWrapper?.querySelector(SELECTOR_OVERLAY_WORD_BUTTON)) {
     isUsingFlyingWords = true;
-    overlayMutationObserver.disconnect();
+  }
+
+  if (isWordAnimationDisabled) {
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        const button = node.querySelector(SELECTOR_OVERLAY_WORD_BUTTON);
+
+        if (button) {
+          for (const animation of button.getAnimations()) {
+            animation.finish();
+          }
+        }
+      }
+    }
   }
 });
 
@@ -533,7 +556,7 @@ const isNativeDraggableWord = element => {
       if (true === props.draggable) {
         return true;
       } else if (isArray(props.children)) {
-        return props.children.some(isDraggableProps(it?.props));
+        return props.children.some(isDraggableProps(_?.props));
       } else if (isObject(props.children)) {
         return isDraggableProps(props.children.props);
       }
@@ -551,20 +574,36 @@ const isNativeDraggableWord = element => {
   return false;
 };
 
+/**
+ * @type {Function}
+ * @param {?Element} element A word element that can be used to determine whether words are natively draggable.
+ * @returns {boolean} Whether words are natively draggable.
+ */
+const isUsingNativeDnd = (() => {
+  let isNativeDnd = false;
+
+  return element => {
+    if (!isNativeDnd && element) {
+      isNativeDnd = isNativeDraggableWord(element.closest(SELECTOR_WORD) ?? element);
+    }
+
+    return isNativeDnd;
+  };
+})();
+
 setInterval(() => {
   // Poll for new overlay wrappers to setup the detection of the words animation.
   const newOverlayWrapper = document.querySelector(SELECTOR_OVERLAY_WRAPPER);
 
   if (newOverlayWrapper !== lastOverlayWrapper) {
+    overlayMutationObserver.disconnect();
     lastOverlayWrapper = newOverlayWrapper;
 
     if (!lastOverlayWrapper) {
       return;
     }
 
-    if (null === isUsingFlyingWords) {
-      overlayMutationObserver.observe(lastOverlayWrapper, { childList: true });
-    }
+    overlayMutationObserver.observe(lastOverlayWrapper, { childList: true });
   }
 
   // Poll for new word-bank sources to setup the detection of clicks on word buttons.
@@ -600,9 +639,7 @@ setInterval(() => {
       { childList: true, subtree: true }
     );
 
-    const word = lastWordBankAnswer.querySelector(SELECTOR_DRAGGABLE_WORD);
-
-    if (word && isNativeDraggableWord(word)) {
+    if (isUsingNativeDnd(lastWordBankSource?.querySelector(SELECTOR_WORD_BUTTON))) {
       return;
     }
 
@@ -614,11 +651,13 @@ setInterval(() => {
     sortable.removePlugin(Draggable.Plugins.Mirror);
 
     sortable.on('drag:start', event => {
+      const draggableWord = event.originalSource.closest(SELECTOR_DRAGGABLE_WORD);
+
       if (
         !options.enableDnd
         || isMovingWord
         || !isChallengeUncompleted()
-        || isNativeDraggableWord(event.originalSource.closest(SELECTOR_DRAGGABLE_WORD))
+        || (draggableWord && isUsingNativeDnd(draggableWord))
       ) {
         event.cancel();
         return;
@@ -635,7 +674,6 @@ setInterval(() => {
 
       if (null === isUsingFlyingWords) {
         isUsingFlyingWords = false;
-        overlayMutationObserver.disconnect();
       }
 
       const updatedAnswerWords = getAnswerWords();
@@ -829,19 +867,25 @@ const SELECTOR_ANSWER = '.PcKtj';
 const SELECTOR_WORD_SOURCE = '[data-test="word-bank"]';
 
 /**
- * The possible CSS selectors for word tokens.
+ * The possible CSS selectors for the wrappers of word buttons.
  * @type {string[]}
  */
 const WORD_SELECTORS = [ '._1yW4j', '.JSl9i', '._2LmyT' ];
 
 /**
- * A CSS selector for word buttons anywhere on the page.
+ * A CSS selector for the wrappers of word buttons anywhere on the page.
+ * @type {string}
+ */
+const SELECTOR_WORD = WORD_SELECTORS.join(',');
+
+/**
+ * A CSS selector for the word buttons anywhere on the page.
  * @type {string}
  */
 const SELECTOR_WORD_BUTTON = WORD_SELECTORS.map(`${it} button`).join(',');
 
 /**
- * A CSS selector for word buttons in word-bank answers.
+ * A CSS selector for the wrappers of word buttons in word-bank answers.
  * @type {string}
  */
 const SELECTOR_DRAGGABLE_WORD = WORD_SELECTORS.map(`${SELECTOR_ANSWER} ${it}`).join(',');
