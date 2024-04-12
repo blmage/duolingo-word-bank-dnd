@@ -138,18 +138,29 @@ const isWordButtonDisabled = it.disabled || ('true' === it.ariaDisabled);
 
 /**
  * @type {Function}
- * @param {Node} button A word button.
+ * @param {Node} element A word button.
  * @returns {string} The corresponding word.
  */
-const getWordButtonWord = button => {
-  let baseWord = button.querySelector(SELECTOR_WORD_BUTTON_WORD) || button;
+const getWordButtonWord = element => {
+  let baseButton = element.querySelector(SELECTOR_WORD_BUTTON_WORD) || element;
 
-  if (baseWord.querySelector('rt')) {
-    baseWord = baseWord.cloneNode(true);
-    baseWord.querySelectorAll('rt').forEach(it.remove());
+  if (baseButton.querySelector('rt')) {
+    baseButton = baseButton.cloneNode(true);
+    baseButton.querySelectorAll('rt').forEach(it.remove());
   }
 
-  return baseWord.textContent.trim();
+  let word = baseButton.textContent.trim();
+
+  if ((word.length % 2) === 0) {
+    // The word may be duplicated if some part of it was highlighted due to keyboard "auto-completion".
+    const halfWord = word.slice(0, word.length / 2);
+
+    if (Array.from(baseButton.childNodes).find(it.textContent.trim() === halfWord)) {
+      word = halfWord;
+    }
+  }
+
+  return word;
 }
 
 /**
@@ -185,11 +196,13 @@ const applyFlyingWordsOrder = offset => {
     const nextButton = wordButtons.shift();
 
     if (nextButton) {
+      // Get the word first, because the structure changes unreliably once it is removed.
+      const word = getWordButtonWord(nextButton);
+
       nextButton.click();
 
-      if (!isDraggedWordButton(nextButton)) {
-        const word = getWordButtonWord(nextButton);
-        ('' !== word) && sortedWords.push(word);
+      if (!isDraggedWordButton(nextButton) && ('' !== word)) {
+        sortedWords.push(word);
       }
 
       setTimeout(() => {
@@ -858,7 +871,7 @@ const SELECTOR_OVERLAY_WRAPPER = '#overlays';
  * A CSS selector for word-bank answers.
  * @type {string}
  */
-const SELECTOR_ANSWER = '.PcKtj';
+const SELECTOR_ANSWER = '.PcKtj, ._1Ga4w';
 
 /**
  * A CSS selector for sources of words.
@@ -870,7 +883,7 @@ const SELECTOR_WORD_SOURCE = '[data-test="word-bank"]';
  * The possible CSS selectors for the wrappers of word buttons.
  * @type {string[]}
  */
-const WORD_SELECTORS = [ '._1yW4j', '.JSl9i', '._2LmyT' ];
+const WORD_SELECTORS = [ '._1-OTM', '_1x7lI', '._2x2Bu'  ];
 
 /**
  * A CSS selector for the wrappers of word buttons anywhere on the page.
@@ -894,16 +907,13 @@ const SELECTOR_DRAGGABLE_WORD = WORD_SELECTORS.map(`${SELECTOR_ANSWER} ${it}`).j
  * A CSS selector for flying word buttons in the overlay wrapper.
  * @type {string}
  */
-const SELECTOR_OVERLAY_WORD_BUTTON = 'button._1O290';
+const SELECTOR_OVERLAY_WORD_BUTTON = 'button._1O290, button[data-test$="-challenge-tap-token"]';
 
 /**
  * The class name that can be added to a word button to highlight it.
- *
- * Copied by searching for a suitable class in the "sessions" stylesheet,
- * while taking into account the fact that parts of the words may already be highlighted if the keyboard was used.
- * @type {string}
+  * @type {string}
  */
-const CLASS_NAME_HIGHLIGHTED_WORD_BUTTON = 'pmjld';
+const CLASS_NAME_HIGHLIGHTED_WORD_BUTTON = '_dnd_-highlighted-word-button';
 
 /**
  * The class name that is added to the original word button when a word is dragged.
@@ -915,4 +925,4 @@ const CLASS_NAME_DRAGGED_WORD_BUTTON = '_dnd_-dragged-word-button';
  * A CSS selector for the word inside word buttons.
  * @type {string}
  */
-const SELECTOR_WORD_BUTTON_WORD = '._2J2do, ._3PW0K';
+const SELECTOR_WORD_BUTTON_WORD = '._2J2do, ._3PW0K, *[data-test="challenge-tap-token-text"]';
