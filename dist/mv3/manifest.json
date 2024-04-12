@@ -1,0 +1,45 @@
+{
+  "name": "Duolingo Word Bank Dnd",
+  "version": "2.4.0",
+  "description": "Enables the drag'n'drop of words in the word-bank answers on Duolingo.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.duolingo.com/"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [ "https://*.duolingo.com/*" ],
+      "js": [ "src/content.js" ],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "browser_style": true,
+    "default_popup": "pages/popup.html",
+    "default_icon": "icons/icon_48.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/css/ui.css",
+        "src/observer.js",
+        "src/ui.js"
+      ],
+      "matches": [ "https://*.duolingo.com/*" ]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon_16.png",
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png",
+    "256": "icons/icon_256.png",
+    "512": "icons/icon_512.png"
+  },
+  "manifest_version": 3
+}

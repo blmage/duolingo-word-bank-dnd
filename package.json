@@ -3,7 +3,7 @@
   "description": "A minimal browser extension for enabling the drag'n'drop of words in the word-bank answers on Duolingo.",
   "license": "MIT",
   "author": "blmage",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "homepage": "https://github.com/blmage/duolingo-word-bank-dnd",
   "scripts": {
     "build": "rollup -c --environment production",
@@ -29,6 +29,7 @@
     "eslint-plugin-jsdoc": "^46.8.2",
     "one-liner.macro": "git+https://github.com/blmage/one-liner.macro.git#semver:^3.3.0",
     "rollup": "^2.55.0",
+    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-strict-alias": "^1.0.0",
     "rollup-plugin-terser": "^7.0.2"
   }

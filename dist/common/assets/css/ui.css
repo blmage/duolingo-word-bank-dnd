@@ -3,3 +3,8 @@ body._duo-wb-dnd_disabled_word_animation .-unOT,
 body._duo-wb-dnd_disabled_word_animation button[data-test$="tap-token"] {
     transition-duration: 0s !important;
 }
+
+._dnd_-highlighted-word-button {
+    --web-ui_button-color: rgb(var(--color-gold)) !important;
+    --__internal__switchable__border-color: rgb(var(--color-gold)) !important;
+}
