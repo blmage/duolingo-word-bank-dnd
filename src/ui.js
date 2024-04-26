@@ -871,7 +871,7 @@ const SELECTOR_OVERLAY_WRAPPER = '#overlays';
  * A CSS selector for word-bank answers.
  * @type {string}
  */
-const SELECTOR_ANSWER = '.PcKtj, ._1Ga4w';
+const SELECTOR_ANSWER = '._1Ga4w, ._2-F7v';
 
 /**
  * A CSS selector for sources of words.
@@ -883,7 +883,7 @@ const SELECTOR_WORD_SOURCE = '[data-test="word-bank"]';
  * The possible CSS selectors for the wrappers of word buttons.
  * @type {string[]}
  */
-const WORD_SELECTORS = [ '._1-OTM', '_1x7lI', '._2x2Bu'  ];
+const WORD_SELECTORS = [ '_1x7lI', '._2x2Bu', '._DVHp' ];
 
 /**
  * A CSS selector for the wrappers of word buttons anywhere on the page.
@@ -911,7 +911,7 @@ const SELECTOR_OVERLAY_WORD_BUTTON = 'button._1O290, button[data-test$="-challen
 
 /**
  * The class name that can be added to a word button to highlight it.
-  * @type {string}
+ * @type {string}
  */
 const CLASS_NAME_HIGHLIGHTED_WORD_BUTTON = '_dnd_-highlighted-word-button';
 
@@ -925,4 +925,4 @@ const CLASS_NAME_DRAGGED_WORD_BUTTON = '_dnd_-dragged-word-button';
  * A CSS selector for the word inside word buttons.
  * @type {string}
  */
-const SELECTOR_WORD_BUTTON_WORD = '._2J2do, ._3PW0K, *[data-test="challenge-tap-token-text"]';
+const SELECTOR_WORD_BUTTON_WORD = '._3PW0K, ._1XUN9, *[data-test="challenge-tap-token-text"]';
